@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>VEIL / ONE</title>
+  <meta name="description" content="VEIL / ONE — issued, not released." />
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="stage">
+    <button id="revealBtn" class="primary" aria-haspopup="dialog">ISSUED, NOT RELEASED.</button>
+    <footer class="footer" aria-hidden="true">VEIL / ONE</footer>
+  </main>
+
+  <div id="systemLayer" class="overlay" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="systemLabel">
+    <div class="panel">
+      <header class="panel-head">
+        <h2 id="systemLabel">SYSTEM</h2>
+        <button id="closeBtn" class="icon" aria-label="Close system layer">✕</button>
+      </header>
+
+      <section class="panel-body">
+        <div class="game-wrap">
+          <canvas id="gameCanvas" width="400" height="400" aria-label="Snake game"></canvas>
+          <div class="hud">
+            <div id="score" class="score" aria-live="polite">Score: 0</div>
+            <div class="controls">
+              <button id="resetBtn" class="ghost">Reset</button>
+            </div>
+          </div>
+
+          <div class="mobile-controls" aria-hidden="false">
+            <button class="dir" data-dir="up" aria-label="Up">▲</button>
+            <div class="dir-row">
+              <button class="dir" data-dir="left" aria-label="Left">◀</button>
+              <button class="dir" data-dir="down" aria-label="Down">▼</button>
+              <button class="dir" data-dir="right" aria-label="Right">▶</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <script defer src="app.js"></script>
+</body>
+</html>
