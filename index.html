@@ -1,49 +1,644 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>VEIL / ONE</title>
-  <meta name="description" content="VEIL / ONE — issued, not released." />
-  <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VEIL-ONE | Premium Gateway</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #0a0e27;
+            --secondary: #1a1f3a;
+            --accent: #00ff88;
+            --accent-dark: #00cc6a;
+            --text: #e0e6ff;
+            --text-dim: #8892b0;
+            --border: #2a3f5f;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: var(--text);
+            min-height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Background animation */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 50%, rgba(0, 255, 136, 0.03) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 80%, rgba(0, 255, 136, 0.02) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .container {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .content {
+            text-align: center;
+            max-width: 600px;
+            z-index: 10;
+        }
+
+        .header {
+            margin-bottom: 40px;
+            animation: slideDown 0.8s ease-out;
+        }
+
+        .logo {
+            font-size: 48px;
+            font-weight: 700;
+            color: var(--accent);
+            text-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+
+        .tagline {
+            color: var(--text-dim);
+            font-size: 14px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .game-container {
+            margin: 40px 0;
+            padding: 30px;
+            background: rgba(26, 31, 58, 0.6);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            animation: slideUp 0.8s ease-out 0.2s both;
+        }
+
+        .game-title {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        canvas {
+            display: block;
+            margin: 0 auto;
+            background: rgba(10, 14, 39, 0.8);
+            border: 2px solid var(--accent);
+            border-radius: 8px;
+            max-width: 100%;
+            height: auto;
+        }
+
+        .game-info {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+            font-size: 14px;
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .info-label {
+            color: var(--text-dim);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-value {
+            color: var(--accent);
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .game-controls {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(0, 255, 136, 0.05);
+            border: 1px solid rgba(0, 255, 136, 0.2);
+            border-radius: 8px;
+            font-size: 13px;
+            color: var(--text-dim);
+            line-height: 1.6;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            justify-content: center;
+            animation: slideUp 0.8s ease-out 0.4s both;
+        }
+
+        button {
+            padding: 12px 32px;
+            font-size: 14px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: var(--primary);
+            border: 2px solid var(--accent);
+        }
+
+        .btn-primary:hover {
+            background: transparent;
+            color: var(--accent);
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
+            transform: scale(1.05);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--accent);
+            border: 2px solid var(--accent);
+        }
+
+        .btn-secondary:hover {
+            background: var(--accent);
+            color: var(--primary);
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
+            transform: scale(1.05);
+        }
+
+        .btn-disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-disabled:hover {
+            transform: none;
+            box-shadow: none;
+        }
+
+        .info-section {
+            margin-top: 30px;
+            padding: 25px;
+            background: rgba(26, 31, 58, 0.4);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            animation: slideUp 0.8s ease-out 0.6s both;
+        }
+
+        .info-title {
+            font-size: 16px;
+            margin-bottom: 15px;
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .info-text {
+            font-size: 13px;
+            line-height: 1.8;
+            color: var(--text-dim);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid var(--accent);
+            border-radius: 4px;
+            color: var(--accent);
+            font-size: 12px;
+            margin-top: 10px;
+            font-weight: 600;
+        }
+
+        .status-badge.unlocked {
+            background: rgba(0, 255, 136, 0.2);
+            border-color: var(--accent);
+        }
+
+        .status-badge.locked {
+            background: rgba(255, 100, 100, 0.1);
+            border-color: #ff6464;
+            color: #ff6464;
+        }
+
+        .timestamp {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            font-size: 11px;
+            color: var(--text-dim);
+            font-family: 'Courier New', monospace;
+            opacity: 0.7;
+        }
+
+        .user-info {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            font-size: 12px;
+            color: var(--text-dim);
+            opacity: 0.7;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .logo {
+                font-size: 32px;
+            }
+
+            canvas {
+                max-height: 400px;
+            }
+
+            .button-group {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            button {
+                width: 100%;
+            }
+
+            .game-info {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .timestamp, .user-info {
+                position: static;
+                margin-top: 20px;
+                opacity: 1;
+            }
+        }
+    </style>
 </head>
 <body>
-  <main class="stage">
-    <button id="revealBtn" class="primary" aria-haspopup="dialog">ISSUED, NOT RELEASED.</button>
-    <footer class="footer" aria-hidden="true">VEIL / ONE</footer>
-  </main>
-
-  <div id="systemLayer" class="overlay" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="systemLabel">
-    <div class="panel">
-      <header class="panel-head">
-        <h2 id="systemLabel">SYSTEM</h2>
-        <button id="closeBtn" class="icon" aria-label="Close system layer">✕</button>
-      </header>
-
-      <section class="panel-body">
-        <div class="game-wrap">
-          <canvas id="gameCanvas" width="400" height="400" aria-label="Snake game"></canvas>
-          <div class="hud">
-            <div id="score" class="score" aria-live="polite">Score: 0</div>
-            <div class="controls">
-              <button id="resetBtn" class="ghost">Reset</button>
-            </div>
-          </div>
-
-          <div class="mobile-controls" aria-hidden="false">
-            <button class="dir" data-dir="up" aria-label="Up">▲</button>
-            <div class="dir-row">
-              <button class="dir" data-dir="left" aria-label="Left">◀</button>
-              <button class="dir" data-dir="down" aria-label="Down">▼</button>
-              <button class="dir" data-dir="right" aria-label="Right">▶</button>
-            </div>
-          </div>
-        </div>
-      </section>
-
+    <div class="user-info">
+        User: <span id="user">VEIL-ONE-UK</span>
     </div>
-  </div>
 
-  <script defer src="app.js"></script>
+    <div class="timestamp">
+        <div>Generated: 2025-12-24 22:08:45 UTC</div>
+        <div id="current-time"></div>
+    </div>
+
+    <div class="container">
+        <div class="content">
+            <div class="header">
+                <div class="logo">VEIL-ONE</div>
+                <div class="tagline">Premium Gateway</div>
+            </div>
+
+            <div id="locked-state">
+                <div class="game-container">
+                    <div class="game-title">🎮 Snake Game Challenge</div>
+                    <p style="color: var(--text-dim); margin-bottom: 20px;">Unlock the INFO section by scoring 100+ points</p>
+                    <canvas id="gameCanvas" width="300" height="300"></canvas>
+                    <div class="game-info">
+                        <div class="info-item">
+                            <div class="info-label">Score</div>
+                            <div class="info-value" id="score">0</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">High Score</div>
+                            <div class="info-value" id="highScore">0</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Status</div>
+                            <div class="info-value" id="gameStatus">Active</div>
+                        </div>
+                    </div>
+                    <div class="game-controls">
+                        <strong>Controls:</strong><br>
+                        Arrow Keys or WASD to move • Space to restart • Score 100+ to unlock INFO
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn-primary" id="resetBtn">Reset Game</button>
+                </div>
+            </div>
+
+            <div id="unlocked-state" class="hidden">
+                <div class="info-section">
+                    <div class="info-title">✨ Welcome to the Inner Circle</div>
+                    <div class="info-text">
+                        <p>You have successfully unlocked the premium gateway. This exclusive access grants you entry to our premium services and information vault.</p>
+                        <p style="margin-top: 15px;">Your achievement has been recorded in localStorage and will persist across sessions. You are now part of an elite group of users with verified access.</p>
+                    </div>
+                    <div class="status-badge unlocked">🔓 ACCESS GRANTED</div>
+                </div>
+
+                <div class="info-section" style="margin-top: 20px;">
+                    <div class="info-title">📋 Your Profile</div>
+                    <div class="info-text">
+                        <div><strong>Username:</strong> VEIL-ONE-UK</div>
+                        <div style="margin-top: 10px;"><strong>Status:</strong> Premium Member</div>
+                        <div style="margin-top: 10px;"><strong>Unlock Date:</strong> <span id="unlockDate"></span></div>
+                        <div style="margin-top: 10px;"><strong>Final Score:</strong> <span id="finalScore"></span></div>
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn-secondary" id="resetAccessBtn">Reset Access</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ========== Snake Game Logic ==========
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        const gridSize = 20;
+        let snake = [{x: 10, y: 10}];
+        let food = {x: 15, y: 15};
+        let score = 0;
+        let highScore = parseInt(localStorage.getItem('veilOneHighScore')) || 0;
+        let gameActive = true;
+        let direction = {x: 1, y: 0};
+        let nextDirection = {x: 1, y: 0};
+        
+        const UNLOCK_THRESHOLD = 100;
+
+        // Update UI
+        function updateUI() {
+            document.getElementById('score').textContent = score;
+            document.getElementById('highScore').textContent = highScore;
+        }
+
+        // Draw game
+        function draw() {
+            // Clear canvas
+            ctx.fillStyle = 'rgba(10, 14, 39, 0.8)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Draw grid
+            ctx.strokeStyle = 'rgba(0, 255, 136, 0.1)';
+            ctx.lineWidth = 0.5;
+            for (let i = 0; i <= canvas.width; i += gridSize) {
+                ctx.beginPath();
+                ctx.moveTo(i, 0);
+                ctx.lineTo(i, canvas.height);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(0, i);
+                ctx.lineTo(canvas.width, i);
+                ctx.stroke();
+            }
+
+            // Draw snake
+            snake.forEach((segment, index) => {
+                if (index === 0) {
+                    ctx.fillStyle = '#00ff88';
+                    ctx.shadowColor = 'rgba(0, 255, 136, 0.8)';
+                    ctx.shadowBlur = 10;
+                } else {
+                    ctx.fillStyle = '#00cc6a';
+                    ctx.shadowColor = 'rgba(0, 204, 106, 0.4)';
+                    ctx.shadowBlur = 5;
+                }
+                ctx.fillRect(segment.x * gridSize + 1, segment.y * gridSize + 1, gridSize - 2, gridSize - 2);
+            });
+            ctx.shadowColor = 'transparent';
+
+            // Draw food
+            ctx.fillStyle = '#ff6464';
+            ctx.shadowColor = 'rgba(255, 100, 100, 0.8)';
+            ctx.shadowBlur = 10;
+            ctx.beginPath();
+            ctx.arc(food.x * gridSize + gridSize / 2, food.y * gridSize + gridSize / 2, gridSize / 2 - 2, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.shadowColor = 'transparent';
+        }
+
+        // Update game state
+        function update() {
+            if (!gameActive) return;
+
+            direction = nextDirection;
+            const head = {x: snake[0].x + direction.x, y: snake[0].y + direction.y};
+
+            // Check wall collision
+            if (head.x < 0 || head.x >= canvas.width / gridSize || head.y < 0 || head.y >= canvas.height / gridSize) {
+                gameOver();
+                return;
+            }
+
+            // Check self collision
+            if (snake.some(segment => segment.x === head.x && segment.y === head.y)) {
+                gameOver();
+                return;
+            }
+
+            snake.unshift(head);
+
+            // Check food collision
+            if (head.x === food.x && head.y === food.y) {
+                score += 10;
+                if (score > highScore) {
+                    highScore = score;
+                    localStorage.setItem('veilOneHighScore', highScore);
+                }
+                updateUI();
+                generateFood();
+                checkUnlock();
+            } else {
+                snake.pop();
+            }
+        }
+
+        // Generate food
+        function generateFood() {
+            food = {
+                x: Math.floor(Math.random() * (canvas.width / gridSize)),
+                y: Math.floor(Math.random() * (canvas.height / gridSize))
+            };
+        }
+
+        // Game over
+        function gameOver() {
+            gameActive = false;
+            document.getElementById('gameStatus').textContent = 'Game Over';
+        }
+
+        // Reset game
+        function resetGame() {
+            snake = [{x: 10, y: 10}];
+            food = {x: 15, y: 15};
+            score = 0;
+            gameActive = true;
+            direction = {x: 1, y: 0};
+            nextDirection = {x: 1, y: 0};
+            document.getElementById('gameStatus').textContent = 'Active';
+            updateUI();
+            draw();
+        }
+
+        // Game loop
+        function gameLoop() {
+            update();
+            draw();
+        }
+
+        setInterval(gameLoop, 100);
+
+        // ========== Input Handling ==========
+        document.addEventListener('keydown', (e) => {
+            switch(e.key.toLowerCase()) {
+                case 'arrowup':
+                case 'w':
+                    if (direction.y === 0) nextDirection = {x: 0, y: -1};
+                    e.preventDefault();
+                    break;
+                case 'arrowdown':
+                case 's':
+                    if (direction.y === 0) nextDirection = {x: 0, y: 1};
+                    e.preventDefault();
+                    break;
+                case 'arrowleft':
+                case 'a':
+                    if (direction.x === 0) nextDirection = {x: -1, y: 0};
+                    e.preventDefault();
+                    break;
+                case 'arrowright':
+                case 'd':
+                    if (direction.x === 0) nextDirection = {x: 1, y: 0};
+                    e.preventDefault();
+                    break;
+                case ' ':
+                    resetGame();
+                    e.preventDefault();
+                    break;
+            }
+        });
+
+        // ========== Unlock System ==========
+        function checkUnlock() {
+            if (score >= UNLOCK_THRESHOLD && !localStorage.getItem('veilOneUnlocked')) {
+                unlockInfo();
+            }
+        }
+
+        function unlockInfo() {
+            localStorage.setItem('veilOneUnlocked', 'true');
+            localStorage.setItem('veilOneUnlockDate', new Date().toISOString());
+            localStorage.setItem('veilOneUnlockScore', score);
+            showInfoSection();
+        }
+
+        function lockInfo() {
+            localStorage.removeItem('veilOneUnlocked');
+            localStorage.removeItem('veilOneUnlockDate');
+            localStorage.removeItem('veilOneUnlockScore');
+            hideInfoSection();
+            resetGame();
+        }
+
+        function showInfoSection() {
+            document.getElementById('locked-state').classList.add('hidden');
+            document.getElementById('unlocked-state').classList.remove('hidden');
+            
+            const unlockDate = localStorage.getItem('veilOneUnlockDate');
+            const unlockScore = localStorage.getItem('veilOneUnlockScore');
+            
+            document.getElementById('unlockDate').textContent = new Date(unlockDate).toLocaleString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            document.getElementById('finalScore').textContent = unlockScore;
+        }
+
+        function hideInfoSection() {
+            document.getElementById('locked-state').classList.remove('hidden');
+            document.getElementById('unlocked-state').classList.add('hidden');
+        }
+
+        // ========== Button Handlers ==========
+        document.getElementById('resetBtn').addEventListener('click', resetGame);
+        document.getElementById('resetAccessBtn').addEventListener('click', () => {
+            if (confirm('Reset your access? You will need to play the game again to unlock the INFO section.')) {
+                lockInfo();
+            }
+        });
+
+        // ========== Initialization ==========
+        function init() {
+            updateUI();
+            draw();
+            
+            // Check if already unlocked
+            if (localStorage.getItem('veilOneUnlocked') === 'true') {
+                showInfoSection();
+            }
+
+            // Update current time
+            function updateTime() {
+                const now = new Date();
+                const timeStr = now.toISOString().replace('T', ' ').slice(0, 19);
+                document.getElementById('current-time').textContent = 'Now: ' + timeStr + ' UTC';
+            }
+            updateTime();
+            setInterval(updateTime, 1000);
+        }
+
+        init();
+    </script>
 </body>
 </html>
